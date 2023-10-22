@@ -1,0 +1,51 @@
+{% extends "memory/base.html" %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <a href="{% url 'memory:gallery' %}" 
+            class="btn btn-dark my-3">Вернутся в галлерею</a>
+            <div class="card">
+
+
+                <form method="POST" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="form-group m-3">
+                        <label>Ваши Впечетления</label>
+                        <input required name="description" type="text" placeholder="Введите свои впечетления" 
+                        class="form-control-file">
+                    </div>
+
+                    <div class="form-group m-3">
+                        <label>Выберете категорию</label>
+                        <select name="category" class="form-control-file">
+                            <option value="none">Выберете категорию</option>
+
+                            {% for category in categories %}
+                                <option value="{{category.id}}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group m-3">
+                        <label>Создать новую категорию</label>
+                        <input name="category_new" type="text" placeholder="Создать новую категорию" 
+                        class="form-control-file">
+                    </div>
+
+                    <div class="form-group m-3">
+                        <label>Загрузите изображение</label>
+                        <input required name="image" type="file" class="form-control-file">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary m-3">Сохранить новое воспоминание</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content%}
