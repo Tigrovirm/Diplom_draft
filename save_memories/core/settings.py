@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main.apps.MainConfig',
+    'social_django',
     'memory.apps.MemoryConfig',
 ]
 
@@ -100,7 +100,9 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+LOGIN_URL = '/accounts/login/'
+SOCIAL_AUTH_VK_OAUTH2_KEY = 'your_vk_app_id'
+SOCIAL_AUTH_VK_OAUTH2_SECRET = 'your_vk_app_secret'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

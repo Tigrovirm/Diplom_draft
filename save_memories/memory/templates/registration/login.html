@@ -1,0 +1,14 @@
+{% extends "memory/base.html" %}
+
+{% block title %}Авторизация{% endblock title%}
+
+{% block content %}
+<div class="features">
+    <form method="post" action="{% url 'memory:login' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="next" value="{% url 'memory:gallery' %}" />
+        <button name="submit">Login</button>
+    </form>
+</div>
+{% endblock content %}

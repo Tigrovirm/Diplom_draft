@@ -16,6 +16,12 @@
     </style>
 </head>
 <body class="m-5">
+    {% if user.is_authenticated %}
+        Пользователь {{ user.username }} авторезирован
+        <a href="{% url 'memory:logout' %}?next={% url 'memory:index' %}">Выйти из аккаунта</a>
+    {% else %}
+                
+    {% endif %}
     {% block content %}
     {% endblock content%}
 </body>
