@@ -1,0 +1,27 @@
+{% extends "memory/base.html" %}
+
+{% block title %}Главная Страница{% endblock title%}
+
+{% load socialaccount %}
+{% providers_media_js %}
+{% block content %}
+<div class="m-3">
+    <div class="col text-center">
+        <p>Данное приложение создано для сохранения ващих впечетлений о посещенных местах</p>
+        <div class="first">
+            {% if user.is_authenticated %}
+                {% if user.first_name %}
+                    <a href="{% url 'memory:gallery' %}" class="btn btn-primary style="text-decoration: none;">Зайти в Галлерею</a>
+                {% else %}
+                    <a href="{% url 'memory:gallery' %}" class="btn btn-primary style="text-decoration: none;">Зайти в Галлерею</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'memory:login' %}" class="btn btn-primary">Авторезироваться</a>
+                <a href="{% url 'memory:registration' %}" class="btn btn-primary">Регистрация</a>
+                <a href="{% provider_login_url 'google' %}?next=/gallery/" class="btn btn-primary">Google</a>
+                
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

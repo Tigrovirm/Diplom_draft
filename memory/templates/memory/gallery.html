@@ -1,0 +1,60 @@
+{% extends "memory/base.html" %}
+
+{% block title %}Галлерея{% endblock title%}
+{% block content %}
+<div class="m-5">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+
+                <div class="card">
+                    <div class="card-header">
+                    Категории
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="{% url 'memory:gallery' %}" style="text-decoration: none;">Все Категории</a>
+                        </li>
+                        {% for category in categories %}
+                        <li class="list-group-item">
+                            <a href="{% url 'memory:gallery' %}?category={{ category.name }}" style="text-decoration: none;">
+                                {{ category.name }}
+                            </a>
+                            {% if category.memory_set.count == 0 %}
+                                <!-- Показать ссылку на удаление, если в категории нет памяти -->
+                                <a href="{% url 'memory:delete_category' category.id %}">
+                                    <span class="badge badge-danger" style="float: right; font-size: 1em; color: red;">&times;</span>
+                                </a>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                        
+                        <a href="{% url 'memory:add' %}" class="btn btn-dark btn-block btn-sm m-1">Добавить Воспоминание</a>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    {% for memory in memories %}
+                    <div class="col-md-4">
+                        <div class="card my-2">
+                            <img class="image-thumbail" src="{{memory.image.url}}" alt="Card image cap">
+                            <div class="card-body">
+                                <small>{{ memory.title }}</small>
+                            </div>
+                            <div class="card-body">
+                                <small>Категория: {{memory.category.name}}</small>
+                            </div>
+                            <a href="{% url 'memory:remembering' memory.id %}" class="btn btn-outline-dark btn-sm m-1">Подробнее</a>
+                        </div>
+                    </div>
+                    {% empty %}
+                        <h3>Нет Воспоминаний...</h3>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
