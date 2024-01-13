@@ -1,9 +1,8 @@
-from django.shortcuts import render, redirect
-from django.views.generic import DeleteView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import DeleteView, UpdateView
 from django.urls import reverse_lazy
 from .models import Category, Memory
-from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut
+from .forms import MemoryForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 
@@ -45,36 +44,63 @@ def addMemory(request):
     categories = Category.objects.filter(user=request.user)
 
     if request.method == "POST":
-        data = request.POST
-        image = request.FILES.get('image')
+        form = MemoryForm(request.POST, request.FILES)
+        if form.is_valid():
+            memory = form.save(commit=False)
+            memory.user = request.user
 
-        if data['category'] != 'none':
-            category = Category.objects.get(id=data['category'], user=request.user)
-        elif data['category_new'] != '':
-            category, created = Category.objects.get_or_create(name=data['category_new'], user=request.user)
-        else:
-            category = None
-        
-        address = data.get('address', '')
-        latitude, longitude = data.get("latitude", ""), data.get("longitude", "")
+            category = form.cleaned_data['category']
+            new_category_name = form.cleaned_data['new_category_name']
 
-        memory = Memory.objects.create(
-            user=request.user,
-            category=category,
-            description=data['description'],
-            latitude=latitude,
-            longitude=longitude,
-            address=address,
-            image=image,
-        )
+            if category:
+                memory.category = category
+            elif new_category_name:
+                new_category = Category.objects.create(name=new_category_name, user=request.user)
+                memory.category = new_category
+            memory.save()
+            return redirect('memory:gallery')
+    else:
+        form = MemoryForm()
+        form.user = request.user
+        form.fields['category'].queryset = categories
 
-        return redirect('memory:gallery')
-
-    context = {'categories': categories}
+    context = {'categories': categories, 'form': form}
     return render(request, 'memory/add.html', context)
+
+@login_required
+def delete_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+
+    if category.memory_set.count() == 0:
+        category.delete()
+        return redirect('memory:gallery')
+    else:
+        return redirect('memory:gallery')
 
 class DeleteMemory(DeleteView):
     model = Memory
     template_name = "memory/delete_remember.html"
     context_object_name = "post"
     success_url = reverse_lazy("memory:gallery")
+
+class UpdateMemory(UpdateView):
+    model = Memory  # Используйте модель Memory, а не форму MemoryForm
+    form_class = MemoryForm  # Укажите класс вашей формы
+    template_name = "memory/add.html"
+    success_url = reverse_lazy("memory:gallery")
+
+    def form_valid(self, form):
+        memory = form.save(commit=False)
+        memory.user = self.request.user
+
+        category = form.cleaned_data['category']
+        new_category_name = form.cleaned_data['new_category_name']
+
+        if category:
+            memory.category = category
+        elif new_category_name:
+            new_category = Category.objects.create(name=new_category_name, user=self.request.user)
+            memory.category = new_category
+
+        memory.save()
+        return super().form_valid(form)

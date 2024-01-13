@@ -1,64 +1,31 @@
 {% extends "memory/base.html" %}
 
+{% block title %}Добавить Воспоминание{% endblock title%}
 
 {% block content %}
-<div class="container">
+<div class="m-5">
+  <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-4">
             <a href="{% url 'memory:gallery' %}" 
             class="btn btn-dark my-3">Вернутся в галлерею</a>
             <div class="card">
-
-
                 <form method="POST" action="" enctype="multipart/form-data">
                     {% csrf_token %}
+                    {{ form.as_p }}
+                    <p>Добавте местоположение:</p>
+                    <div id="map" style="width: 100%; height: 400px;"></div>
 
-                    <div class="form-group m-3">
-                        <label>Ваши Впечетления</label>
-                        <input required name="description" type="text" placeholder="Введите свои впечетления" 
-                        class="form-control-file">
-                    </div>
-
-                    <div class="form-group m-3">
-                        <label>Выберете категорию</label>
-                        <select name="category" class="form-control-file">
-                            <option value="none">Выберете категорию</option>
-
-                            {% for category in categories %}
-                                <option value="{{category.id}}">{{ category.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="form-group m-3">
-                        <label>Создать новую категорию</label>
-                        <input name="category_new" type="text" placeholder="Создать новую категорию" 
-                        class="form-control-file">
-                    </div>
-
-                    <div class="form-group m-3">
-                        <label>Загрузите изображение</label>
-                        <input required name="image" type="file" class="form-control-file">
-                    </div>
-
-                    <div class="form-group m-3">
-                        <label>Выберите местоположение на карте</label>
-                        <div id="map" style="height: 300px;"></div>
-                        <input id="id_latitude" name="latitude" value="">
-                        <input id="id_longitude" name="longitude" value="">
-                        <input id="id_address" name="address" value="">
-                    </div>
-
-                    <button type="submit" class="btn btn-primary m-3">Сохранить новое воспоминание</button>
+                    <button type="submit" class="btn btn-primary m-3" id="saveButton" disabled>Сохранить новое воспоминание</button>
 
                 </form>
             </div>
         </div>
     </div>
-</div>
-<script src="https://api-maps.yandex.ru/2.1/?apikey=6f23e260-3f4c-4ffb-9804-554d9b4dcbf9&lang=ru_RU" type="text/javascript">
-</script>
-<script>
+  </div>
+  <script src="https://api-maps.yandex.ru/2.1/?apikey=''&lang=ru_RU" type="text/javascript">
+  </script>
+  <script>
   ymaps.ready(init);
 
   function init() {
@@ -79,6 +46,7 @@
       var coords = placemark.geometry.getCoordinates();
       document.getElementById('id_latitude').value = coords[0];
       document.getElementById('id_longitude').value = coords[1];
+      checkFormValidity();
     
       ymaps.geocode(coords).then(function (res) {
         var firstGeoObject = res.geoObjects.get(0);
@@ -101,5 +69,19 @@
     });
     
   }
-</script>
+  function checkFormValidity() {
+      var saveButton = document.getElementById('saveButton');
+      var latitudeInput = document.getElementById('id_latitude');
+      var longitudeInput = document.getElementById('id_longitude');
+      var latitude = parseFloat(latitudeInput.value);
+      var longitude = parseFloat(longitudeInput.value);
+
+      if (!isNaN(latitude) && !isNaN(longitude)) {
+        saveButton.disabled = false;
+      } else {
+        saveButton.disabled = true;
+      }
+    }
+  </script>
+</div>
 {% endblock content%}

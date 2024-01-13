@@ -1,3 +1,4 @@
+from typing import Any
 from django.db import models
 from django.contrib.auth.models import User
 from geopy.geocoders import Nominatim
@@ -14,8 +15,9 @@ class Category(models.Model):
 
 class Memory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    title = models.CharField(max_length=50, default=None)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    image = models.ImageField(null=False, blank=False)
+    image = models.ImageField(null=False, upload_to="images/", blank=False)
     description = models.TextField()
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
@@ -37,6 +39,10 @@ class Memory(models.Model):
                 self.longitude = location.longitude
 
         super().save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        self.image.delete()
+        super().delete(*args, **kwargs)
     
     def __str__(self):
         return self.description

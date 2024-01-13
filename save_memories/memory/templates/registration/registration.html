@@ -3,11 +3,13 @@
 {% block title %}Регистрация{% endblock title%}
 
 {% block content %}
-<div class="features">
-    <form method="post" action="{% url 'memory:registration' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button name="submit">Регистрация</button>
-    </form>
-</div>
+<div class="m-5">
+    <div class="features">
+        <form method="post" action="{% url 'memory:registration' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button name="submit">Регистрация</button>
+        </form>
+    </div>
+</div>    
 {% endblock content %}
