@@ -5,6 +5,11 @@
 {% load socialaccount %}
 {% providers_media_js %}
 {% block content %}
+<style>
+    .hak{
+        position: absolute;
+    }
+</style>
 <div class="m-3">
     <div class="col text-center">
         <p>Данное приложение создано для сохранения ващих впечетлений о посещенных местах</p>
@@ -19,7 +24,6 @@
                 <a href="{% url 'memory:login' %}" class="btn btn-primary">Авторезироваться</a>
                 <a href="{% url 'memory:registration' %}" class="btn btn-primary">Регистрация</a>
                 <a href="{% provider_login_url 'google' %}?next=/gallery/" class="btn btn-primary">Google</a>
-                
             {% endif %}
         </div>
     </div>

@@ -5,9 +5,14 @@
     {% trans "Sign In" %}
 {% endblock title %}
 {% block content %}
+<style>
+    .hak{
+        position: absolute;
+    }
+</style>
 <div class="m-5">
     {% if process == "connect" %}
-        {% element h1 %}
+        {% element h1 style="color: white;" %}
             {% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}
         {% endelement %}
         <p>
@@ -16,9 +21,9 @@
         </p>
     {% else %}
         {% element h1 %}
-            {% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}
+            <p style="color: white;">{% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}</p>
         {% endelement %}
-        <p>
+        <p style="color: white;">
             {% blocktrans with provider.name as provider %}Вы собираетесь войти в систему, используя стороннюю учетную запись из {{ provider }}.{% endblocktrans %}
         </p>
     {% endif %}
