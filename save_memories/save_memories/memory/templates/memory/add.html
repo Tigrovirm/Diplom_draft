@@ -3,20 +3,20 @@
 {% block title %}Добавить Воспоминание{% endblock title%}
 
 {% block content %}
-<div class="">
+<div class="m-5">
   <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-4">
             <a href="{% url 'memory:gallery' %}" 
             class="btn btn-dark my-3">Вернутся в галлерею</a>
             <div class="card">
-                <form method="POST" action="" enctype="multipart/form-data" style="color: white;">
+                <form method="POST" action="" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <p>Добавте местоположение:</p>
                     <div id="map" style="width: 100%; height: 400px;"></div>
 
-                    <button type="submit" class="btn btn-primary m-4" id="saveButton" disabled>Сохранить новое воспоминание</button>
+                    <button type="submit" class="btn btn-primary m-3" id="saveButton" disabled>Сохранить новое воспоминание</button>
 
                 </form>
             </div>
@@ -82,18 +82,6 @@
         saveButton.disabled = true;
       }
     }
-    document.addEventListener("DOMContentLoaded", function() {
-            var yourElement = document.querySelector(".hak");
-            var scrollThreshold = 1; // Установите порог прокрутки, после которого position будет отменен
-
-            window.addEventListener("scroll", function() {
-                if (window.scrollY > scrollThreshold) {
-                    yourElement.classList.add("non_position");
-                } else {
-                    yourElement.classList.remove("non_position");
-                }
-            });
-        });
   </script>
 </div>
 {% endblock content%}

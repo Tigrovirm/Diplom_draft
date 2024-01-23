@@ -3,34 +3,21 @@
 {% block title %}{{ memory.title }}{% endblock title%}
 
 {% block content %}
-<style>
-    .hak{
-        position: static;
-    }
-    .col h3 {
-        color: white;
-    }
-    .col p {
-        color: white;
-    }
-</style>
 <div class="m-5">
     <div class="container">
         <div>
             <div class="col">
                 <div class="row justify-content-center">
                     <div class="col">
-                        <img src="{{memory.image.url}}" class="image">
+                        <img style="max-width: 100%; max-height: 100%;"
+                            src="{{memory.image.url}}">
                         
                     </div>
                     <div class="col">
-                        <h3>{{ memory.title }}</h3>
-                        <div class="program-inner">
-                            <p>{{ memory.description}}</p>
-                        </div>
+                        <p>{{ memory.title }}</p>
+                        <p>{{ memory.description}}</p>
                     </div>
                 </div>
-                <hr>
                 <div id="map" style="height: 300px; width: 100%; margin-bottom: 10%;">
                     <p>{{ memory.address }}</p>
                 </div>
@@ -48,30 +35,29 @@
                         class="btn btn-danger my-3">Удалить</a>
                     </div>
                 </div>    
+                <script src="https://api-maps.yandex.ru/2.1/?apikey=6f23e260-3f4c-4ffb-9804-554d9b4dcbf9&lang=ru_RU" type="text/javascript"></script>
                 
+                <script>
+                    ymaps.ready(function () {
+                        var latitude = "{{ memory.latitude }}".replace(',', '.');
+                        console.log(latitude);
+                        var longitude = "{{ memory.longitude }}".replace(',', '.');
+                        console.log(longitude);
+                        console.log(parseFloat(latitude))
+                        var map = new ymaps.Map('map', {
+                            center: [parseFloat(latitude), parseFloat(longitude)],
+                            zoom: 8
+                        });
+                        var placemark = new ymaps.Placemark([parseFloat(latitude), parseFloat(longitude)], {
+                            hintContent: '{{ memory.address }}'
+                        });
+                
+                        map.geoObjects.add(placemark);
+                    });
+                </script>
 
             </div>
         </div>
     </div>
 </div>
-<script src="https://api-maps.yandex.ru/2.1/?apikey=6f23e260-3f4c-4ffb-9804-554d9b4dcbf9&lang=ru_RU" type="text/javascript"></script>
-                
-<script>
-    ymaps.ready(function () {
-        var latitude = "{{ memory.latitude }}".replace(',', '.');
-        console.log(latitude);
-        var longitude = "{{ memory.longitude }}".replace(',', '.');
-        console.log(longitude);
-        console.log(parseFloat(latitude))
-        var map = new ymaps.Map('map', {
-            center: [parseFloat(latitude), parseFloat(longitude)],
-            zoom: 8
-        });
-        var placemark = new ymaps.Placemark([parseFloat(latitude), parseFloat(longitude)], {
-            hintContent: '{{ memory.address }}'
-        });
-
-        map.geoObjects.add(placemark);
-    });
-</script>
 {% endblock content%}

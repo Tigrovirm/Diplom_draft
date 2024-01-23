@@ -3,18 +3,13 @@
 {% block title %}Авторизация{% endblock title%}
 
 {% block content %}
-<style>
-    .hak{
-        position: absolute;
-    }
-</style>
 <div class="m-5">
     <div class="features">
-        <form method="post" action="{% url 'memory:login' %}" style="color: white;">
+        <form method="post" action="{% url 'memory:login' %}">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="hidden" name="next" value="{% url 'memory:gallery' %}" />
-            <button name="submit">Войти</button>
+            <button name="submit">Login</button>
         </form>
     </div>
 </div>    
