@@ -1,0 +1,99 @@
+{% extends "memory/base.html" %}
+
+{% block title %}Добавить Воспоминание{% endblock title%}
+
+{% block content %}
+<div class="">
+  <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <a href="{% url 'memory:gallery' %}" 
+            class="btn btn-dark my-3">Вернутся в галлерею</a>
+            <div class="card">
+                <form method="POST" action="" enctype="multipart/form-data" style="color: white;">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <p>Добавте местоположение:</p>
+                    <div id="map" style="width: 100%; height: 400px;"></div>
+
+                    <button type="submit" class="btn btn-primary m-4" id="saveButton" disabled>Сохранить новое воспоминание</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
+  <script src="https://api-maps.yandex.ru/2.1/?apikey=6f23e260-3f4c-4ffb-9804-554d9b4dcbf9&lang=ru_RU" type="text/javascript">
+  </script>
+  <script>
+  ymaps.ready(init);
+
+  function init() {
+    var map = new ymaps.Map('map', {
+      center: [0, 0],
+      zoom: 2
+    });
+
+    var placemark = new ymaps.Placemark([0, 0], {
+      hintContent: 'Перетащите метку для выбора местоположения'
+    }, {
+      draggable: true
+    });
+
+    map.geoObjects.add(placemark);
+
+    placemark.events.add('dragend', function (e) {
+      var coords = placemark.geometry.getCoordinates();
+      document.getElementById('id_latitude').value = coords[0];
+      document.getElementById('id_longitude').value = coords[1];
+      checkFormValidity();
+    
+      ymaps.geocode(coords).then(function (res) {
+        var firstGeoObject = res.geoObjects.get(0);
+
+        // Используйте getCountry() и getAdministrativeAreas() для получения адреса
+        var country = firstGeoObject.getCountry();
+        var adminAreas = firstGeoObject.getAdministrativeAreas();
+
+        // Соберем адрес из полученных частей
+        var address = [country, adminAreas.join(', ')].filter(Boolean).join(', ');
+
+        // Выведем адрес в консоль для отладки
+        console.log('Адрес:', address);
+
+        // Установим адрес в поле формы
+        document.getElementById('id_address').value = address;
+      }).catch(function (error) {
+        console.error('Ошибка геокодирования:', error);
+      });
+    });
+    
+  }
+  function checkFormValidity() {
+      var saveButton = document.getElementById('saveButton');
+      var latitudeInput = document.getElementById('id_latitude');
+      var longitudeInput = document.getElementById('id_longitude');
+      var latitude = parseFloat(latitudeInput.value);
+      var longitude = parseFloat(longitudeInput.value);
+
+      if (!isNaN(latitude) && !isNaN(longitude)) {
+        saveButton.disabled = false;
+      } else {
+        saveButton.disabled = true;
+      }
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+            var yourElement = document.querySelector(".hak");
+            var scrollThreshold = 1; // Установите порог прокрутки, после которого position будет отменен
+
+            window.addEventListener("scroll", function() {
+                if (window.scrollY > scrollThreshold) {
+                    yourElement.classList.add("non_position");
+                } else {
+                    yourElement.classList.remove("non_position");
+                }
+            });
+        });
+  </script>
+</div>
+{% endblock content%}
