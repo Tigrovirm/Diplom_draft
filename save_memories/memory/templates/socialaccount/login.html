@@ -1,0 +1,34 @@
+{% extends "memory/base.html" %}
+{% load i18n %}
+{% load allauth %}
+{% block title %}
+    {% trans "Sign In" %}
+{% endblock title %}
+{% block content %}
+<div class="m-5">
+    {% if process == "connect" %}
+        {% element h1 %}
+            {% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}
+        {% endelement %}
+        <p>
+            {% blocktrans with provider.name as provider %} 
+            Вы собираетесь подключить новую стороннюю учетную запись с {{ provider }}.{% endblocktrans %}
+        </p>
+    {% else %}
+        {% element h1 %}
+            {% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}
+        {% endelement %}
+        <p>
+            {% blocktrans with provider.name as provider %}Вы собираетесь войти в систему, используя стороннюю учетную запись из {{ provider }}.{% endblocktrans %}
+        </p>
+    {% endif %}
+    {% element form method="post" no_visible_fields=True %}
+        {% slot actions %}
+            {% csrf_token %}
+            {% element button type="submit" %}
+                {% trans "Continue" %}
+            {% endelement %}
+        {% endslot %}
+    {% endelement %}
+</div>    
+{% endblock content %}
